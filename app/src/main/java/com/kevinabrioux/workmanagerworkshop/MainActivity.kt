@@ -11,11 +11,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.kevinabrioux.workmanagerworkshop.ui.theme.WorkManagerWorkshopTheme
+import java.time.Duration
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val constraints = Constraints.Builder()
+            .setRequiresCharging(requiresCharging = true)
+            .build()
+
+        val work = PeriodicWorkRequestBuilder<OneTimeWorker>(repeatInterval = Duration.ofDays(1), flexTimeInterval = Duration.ofHours(1))
+            .setConstraints(constraints)
+            .setInitialDelay(Duration.ofHours(7))
+            .build()
+
+        val workManager = WorkManager.getInstance(this)
+        workManager.enqueueUniquePeriodicWork(uniqueWorkName = "work", existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, request = work)
+
         enableEdgeToEdge()
         setContent {
             WorkManagerWorkshopTheme {
