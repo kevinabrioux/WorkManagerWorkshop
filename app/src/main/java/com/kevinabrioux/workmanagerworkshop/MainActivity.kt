@@ -26,9 +26,9 @@ class MainActivity : ComponentActivity() {
             .setRequiresCharging(requiresCharging = true)
             .build()
 
-        val work = PeriodicWorkRequestBuilder<OneTimeWorker>(repeatInterval = Duration.ofDays(1), flexTimeInterval = Duration.ofHours(1))
+        val work = PeriodicWorkRequestBuilder<OneTimeWorker>(repeatInterval = Duration.ofMinutes(1))
             .setConstraints(constraints)
-            .setInitialDelay(Duration.ofHours(7))
+            .setInitialDelay(Duration.ofSeconds(7))
             .build()
 
         val workManager = WorkManager.getInstance(this)
